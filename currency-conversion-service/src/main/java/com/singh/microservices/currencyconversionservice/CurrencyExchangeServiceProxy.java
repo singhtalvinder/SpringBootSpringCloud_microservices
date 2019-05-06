@@ -13,14 +13,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 // configure in application.properties.
 //@FeignClient(name="currency-exchange-service", url="localhost:8000")
 
-@FeignClient(name="currency-exchange-service")
+// Do not connect to this service, instead connect it via Zuul API.
+// @FeignClient(name="currency-exchange-service")
+
+@FeignClient(name="netflix-zuul-api-gateway-server")
 
 // Ribbon -for client side load balancing.
 @RibbonClient(name="currency-exchange-service")
 public interface CurrencyExchangeServiceProxy {
 	
 	// define method to talk to currency-exchange-service.
-	@GetMapping("/currency-exchange/from/{from}/to/{to}")
+	//@GetMapping("/currency-exchange/from/{from}/to/{to}")
+	// prefix the servie since we are using the Zuul api server now.
+	@GetMapping("/currency-exchange-service/currency-exchange/from/{from}/to/{to}")
 	public CurrencyConversionBean retrieveExchangeValue(@PathVariable String from,
 			                                   @PathVariable String to);
 	// Older version of feign will result in error so we need to add the actual variable name
